@@ -26,6 +26,7 @@ public class SwipeActivity extends SwipeBackActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setSwipeBackOnlyEdge(false);
         setContentView(R.layout.activity_next);
 
         RelativeLayout containerLayout = (RelativeLayout) findViewById(R.id.container);

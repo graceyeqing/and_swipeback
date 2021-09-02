@@ -34,26 +34,49 @@ public class SwipeBackHelper {
 
     private final Interpolator mInterpolator = new DecelerateInterpolator(2f);
 
-    private static final int EDGE_SIZE = 20;  //dp 默认拦截手势区间
+    private  int EDGE_SIZE = 40;  //dp 默认拦截手势区间
     private int mEdgeSize;  //px 拦截手势区间
     private boolean mIsSliding; //是否正在滑动
     private boolean mIsSlideAnimPlaying; //滑动动画展示过程中
     private float mDistanceX;  //px 当前滑动距离 （正数或0）
     private float mLastPointX;  //记录手势在屏幕上的X轴坐标
     private boolean mEnableSlideBack = true; //默认启动滑动返回
+    private boolean mSwipeBackOnlyEdge = false;//只能边缘滑动返回
     private int mTouchSlop;
+    private float mDensity;
     private boolean mIsInThresholdArea;
     private Activity mCurrentActivity;
     private ViewManager mViewManager;
     private ValueAnimator mValueAnimator;
 
-    public SwipeBackHelper(Activity currentActivity, @NonNull SlideActivityCallback slideActivityCallback) {
+    public SwipeBackHelper(Activity currentActivity, boolean swipeBackOnlyEdge,@NonNull SlideActivityCallback slideActivityCallback) {
+        this.mSwipeBackOnlyEdge = swipeBackOnlyEdge;
         mCurrentActivity = currentActivity;
         mViewManager = new ViewManager(currentActivity, slideActivityCallback);
 
         mTouchSlop = ViewConfiguration.get(mCurrentActivity).getScaledTouchSlop();
-        final float density = mCurrentActivity.getResources().getDisplayMetrics().density;
-        mEdgeSize = (int) (EDGE_SIZE * density + 0.5f); //滑动拦截事件的区域
+        mDensity = mCurrentActivity.getResources().getDisplayMetrics().density;
+
+        if(mSwipeBackOnlyEdge){
+            EDGE_SIZE = 40;
+        }else{
+            EDGE_SIZE = 300;
+        }
+        mEdgeSize = (int) (EDGE_SIZE * mDensity + 0.5f); //滑动拦截事件的区域
+    }
+
+    public boolean ismSwipeBackOnlyEdge() {
+        return mSwipeBackOnlyEdge;
+    }
+
+    public void setmSwipeBackOnlyEdge(boolean mSwipeBackOnlyEdge) {
+        this.mSwipeBackOnlyEdge = mSwipeBackOnlyEdge;
+        if(mSwipeBackOnlyEdge){
+            EDGE_SIZE = 40;
+        }else{
+            EDGE_SIZE = 300;
+        }
+        mEdgeSize = (int) (EDGE_SIZE * mDensity + 0.5f); //滑动拦截事件的区域
     }
 
     public void enableSwipeBack(boolean enable) {

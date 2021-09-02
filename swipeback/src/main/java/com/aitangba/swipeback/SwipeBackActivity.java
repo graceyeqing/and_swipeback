@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 public class SwipeBackActivity extends FragmentActivity implements SwipeBackHelper.SlideBackManager {
 
     private SwipeBackHelper mSwipeBackHelper;
+    private boolean mSwipeBackOnlyEdge = false;//只能边缘滑动返回
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -18,7 +19,7 @@ public class SwipeBackActivity extends FragmentActivity implements SwipeBackHelp
             return super.dispatchTouchEvent(ev);
         }
         if (mSwipeBackHelper == null) {
-            mSwipeBackHelper = new SwipeBackHelper(this, new SlideActivityAdapter());
+            mSwipeBackHelper = new SwipeBackHelper(this, mSwipeBackOnlyEdge,new SlideActivityAdapter());
             mSwipeBackHelper.setOnSlideFinishListener(new SwipeBackHelper.OnSlideFinishListener() {
                 @Override
                 public void onFinish() {
@@ -26,6 +27,9 @@ public class SwipeBackActivity extends FragmentActivity implements SwipeBackHelp
                     overridePendingTransition(android.R.anim.fade_in, R.anim.hold_on);
                 }
             });
+        }else {
+            //滑动拦截事件的区域
+            mSwipeBackHelper.setmSwipeBackOnlyEdge(mSwipeBackOnlyEdge);
         }
         return mSwipeBackHelper.processTouchEvent(ev) || super.dispatchTouchEvent(ev);
     }
@@ -36,6 +40,10 @@ public class SwipeBackActivity extends FragmentActivity implements SwipeBackHelp
             mSwipeBackHelper.finishSwipeImmediately();
         }
         super.finish();
+    }
+
+    public void setSwipeBackOnlyEdge(boolean swipeBackOnlyEdge) {
+        this.mSwipeBackOnlyEdge = swipeBackOnlyEdge;
     }
 
     @Override
